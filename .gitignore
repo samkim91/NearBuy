@@ -1,0 +1,7 @@
+
+# ignore images...
+PHP/images/
+
+
+# no need to track phpMyAdmin files
+PHP/phpMyAdmin/
