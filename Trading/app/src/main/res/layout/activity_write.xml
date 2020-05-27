@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.Post.WriteActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+        <ImageView
+            android:id="@+id/fake"
+            android:layout_width="100dp"
+            android:layout_height="110dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/rectangle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/addImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/plus"
+            app:layout_constraintLeft_toLeftOf="@id/fake"
+            app:layout_constraintTop_toTopOf="@id/fake" />
+
+        <TextView
+            android:id="@+id/imageNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="7dp"
+            android:text="0/10"
+            app:layout_constraintRight_toRightOf="@id/addImage"
+            app:layout_constraintTop_toBottomOf="@id/addImage" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_image"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_margin="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fake"
+            app:layout_constraintTop_toTopOf="@id/fake" />
+
+        <EditText
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:hint="제목"
+            android:maxLines="2"
+            app:layout_constraintLeft_toLeftOf="@id/fake"
+            app:layout_constraintTop_toBottomOf="@id/fake" />
+
+        <Spinner
+            android:id="@+id/category_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:spinnerMode="dialog"
+            app:layout_constraintLeft_toLeftOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <EditText
+            android:id="@+id/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:hint="가격 (원)"
+            android:maxLength="9"
+            android:inputType="number"
+            app:layout_constraintLeft_toLeftOf="@id/category_spinner"
+            app:layout_constraintTop_toBottomOf="@id/category_spinner" />
+
+        <EditText
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:hint="가품을 판매하다 적발되면, 이용이 제한돼요."
+            android:inputType="textMultiLine"
+            app:layout_constraintLeft_toLeftOf="@id/price"
+            app:layout_constraintTop_toBottomOf="@id/price" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="category">
+        <item>카테고리</item>
+        <item>자동차/오토바이</item>
+        <item>여성의류/잡화</item>
+        <item>남성의류/잡화</item>
+        <item>출산/유아용품</item>
+        <item>뷰티/미용/쥬얼리</item>
+        <item>휴대폰/컴퓨터/디지털</item>
+        <item>카메라/영상기기</item>
+        <item>음향/악기</item>
+        <item>게임/취미</item>
+        <item>스포츠/레저/자전거</item>
+        <item>생활용품</item>
+        <item>가구/인테리어</item>
+        <item>예술/미술</item>
+        <item>도서</item>
+        <item>상품권/티켓/쿠폰</item>
+        <item>여행/여가</item>
+        <item>반려동물</item>
+        <item>기타</item>
+        <item>삽니다</item>
+    </string-array>
+
+    <string-array name="status">
+        <item>판매중</item>
+        <item>판매완료</item>
+    </string-array>
+
+    <string-array name="myMoreBtn">
+        <item>삭제</item>
+    </string-array>
+
+    <string-array name="defaultMoreBtn">
+        <item>신고하기</item>
+    </string-array>
+
+</resources>

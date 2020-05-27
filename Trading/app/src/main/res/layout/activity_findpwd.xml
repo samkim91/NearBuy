@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Login.FindPwdActivity">
+
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="비밀번호 찾기"
+        android:textSize="40sp"
+        android:textColor="@android:color/black"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="100dp"
+        />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="휴대폰 번호"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintLeft_toLeftOf="@id/text"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="30dp"
+        />
+
+    <EditText
+        android:id="@+id/phoneNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:ems="14"
+        android:maxLines="1"
+        android:maxLength="14"
+        android:inputType="phone"
+        android:hint="+82 1012345678"
+        android:text="+82"
+        app:layout_constraintLeft_toLeftOf="@id/text1"
+        app:layout_constraintTop_toBottomOf="@id/text1"
+        />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintLeft_toLeftOf="@id/phoneNum"
+        app:layout_constraintTop_toBottomOf="@id/phoneNum"
+        />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:ems="14"
+        android:maxLines="1"
+        android:maxLength="20"
+        android:inputType="textEmailAddress"
+        android:hint="가입 시 사용한 이메일"
+        app:layout_constraintLeft_toLeftOf="@id/text2"
+        app:layout_constraintTop_toBottomOf="@id/text2"
+        />
+
+    <Button
+        android:id="@+id/findPasswordBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="확인"
+        app:layout_constraintRight_toRightOf="@id/email"
+        app:layout_constraintTop_toBottomOf="@id/email"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

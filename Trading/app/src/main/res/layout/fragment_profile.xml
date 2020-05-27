@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_card"
+        layout="@layout/item_profile"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="10dp"
+        />
+
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/selling_list"
+        layout="@layout/item_sellinglist"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_card"
+        android:layout_marginTop="30dp"
+        />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/marked_list"
+        layout="@layout/item_markedlist"
+        app:layout_constraintTop_toBottomOf="@id/selling_list"
+        app:layout_constraintLeft_toLeftOf="@id/selling_list"
+        android:layout_marginTop="1dp"
+        />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/set_town"
+        layout="@layout/item_settown"
+        app:layout_constraintTop_toBottomOf="@id/marked_list"
+        app:layout_constraintLeft_toLeftOf="@id/marked_list"
+        android:layout_marginTop="1dp"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="제목"
+        android:textSize="17sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toTopOf="@id/image"
+        app:layout_constraintLeft_toRightOf="@id/image"
+        android:layout_marginLeft="10dp"
+        />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="위치"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintLeft_toRightOf="@id/image"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="시간"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@id/location"
+        app:layout_constraintLeft_toRightOf="@id/location"
+        android:layout_marginLeft="30dp"
+        />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="가격"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/location"
+        app:layout_constraintLeft_toRightOf="@id/image"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        />
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="판매완료"
+        android:visibility="gone"
+        android:textSize="15sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toTopOf="@id/price"
+        app:layout_constraintLeft_toRightOf="@id/price"
+        android:layout_marginLeft="20dp"
+        />
+
+
+    <ImageView
+        android:id="@+id/commentIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/comment"
+        app:layout_constraintTop_toBottomOf="@id/price"
+        app:layout_constraintLeft_toRightOf="@id/image"
+        android:layout_marginLeft="180dp"
+        />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintTop_toTopOf="@id/commentIcon"
+        app:layout_constraintLeft_toRightOf="@id/commentIcon"
+        android:layout_marginLeft="10dp"
+        />
+
+    <ImageView
+        android:id="@+id/markedIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/heart_white"
+        app:layout_constraintTop_toTopOf="@id/comment"
+        app:layout_constraintLeft_toRightOf="@id/comment"
+        android:layout_marginLeft="20dp"
+        />
+
+    <TextView
+        android:id="@+id/marked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintTop_toTopOf="@id/markedIcon"
+        app:layout_constraintLeft_toRightOf="@id/markedIcon"
+        android:layout_marginLeft="10dp"
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
