@@ -134,4 +134,20 @@ public interface RetrofitService {
             @Query("commentId") String commentId, @Query("uId") String uId
     );
 
+    @GET("checkChatRoom.php")
+    Call<ResponseBody> checkChatRoom(
+            @Query("user1") String user1, @Query("user2") String user2
+    );
+
+    @GET("loadLastText.php")
+    Call<ResponseBody> loadLastText(
+            @Query("roomId") String roomId
+    );
+
+    @FormUrlEncoded
+    @POST("uploadChat.php")
+    Call<ResponseBody> uploadChat(
+            @Field("roomId") String roomId, @Field("userId") String userId, @Field("content") String content
+    );
+
 }

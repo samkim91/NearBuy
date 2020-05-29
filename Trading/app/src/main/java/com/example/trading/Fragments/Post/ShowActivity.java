@@ -106,6 +106,7 @@ public class ShowActivity extends AppCompatActivity {
         // 이미지uri 값을 넣을 어레이리스트 생성.
         imageUriList = new ArrayList<>();
 
+
         // 서버에 연결할 레트로핏을 만듦. 빌더에 URL을 담아주고, 객체를 Json 변환시켜주는 Gson을 담음. Gson을 이용하지 않고 JsonObject를 풀고 있는데... 어느 방법이 더 좋을까?
         // 현재는 익숙한 JsonObject로 풀고 있는데 Gson도 공부해볼 필요가 있음.
         Retrofit retrofit = new Retrofit.Builder()
@@ -281,11 +282,7 @@ public class ShowActivity extends AppCompatActivity {
         uSendMSG.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ChatRoomActivity.class);
-
-                // 게시자의 아이디를 인텐트에 포함시켜서 보냄.
-                intent.putExtra("writerId", uPhoneNum);
-                startActivity(intent);
+                checkChatRomm();
             }
         });
 
@@ -323,6 +320,59 @@ public class ShowActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), CommentActivity.class);
                 intent.putExtra("no", no);
                 startActivity(intent);
+            }
+        });
+    }
+
+    public void checkChatRomm(){
+
+        String URL2 = "http://15.165.57.108/Chat/";
+
+        // 상대방과의 채팅방이 있는지 확인하고, 있으면 해당방을 리턴받아서 채팅룸 액티비티로 보내고, 없으면 하나 생성해서 보낸다.
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL2)
+                .build();
+
+        RetrofitService retrofitService = retrofit.create(RetrofitService.class);
+
+        Call<ResponseBody> call = retrofitService.checkChatRoom(UserInfo.getPhoneNum(), uPhoneNum);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d(TAG, "onResponse : "+response);
+                try {
+                    String result = response.body().string();
+                    Log.d(TAG, result);
+
+                    if( response.isSuccessful() ){
+                        Log.d(TAG, "response is successful");
+
+                        if(!result.equals("failed")){
+                            // 결과가 failed가 아니라면 룸넘버가 반환됐을 것이다. 이를 chatRoomActivity로 넘겨주자.
+                            Intent intent = new Intent(getApplicationContext(), ChatRoomActivity.class);
+
+                            // 룸 아이디를 인텐트에 포함시켜서 보냄.
+                            intent.putExtra("roomId", result);
+                            startActivity(intent);
+                        }else{
+                            Toast.makeText(getApplicationContext(), "다시 시도해주세요!", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "returned failed");
+                        }
+                    }else{
+                        Toast.makeText(getApplicationContext(), "다시 시도해주세요!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "response is not successful");
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "서버와 통신이 좋지 않아요", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onFailure: " + t);
             }
         });
     }

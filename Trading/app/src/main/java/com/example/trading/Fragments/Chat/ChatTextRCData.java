@@ -8,6 +8,14 @@ public class ChatTextRCData {
     String content;
     String date;
 
+    public ChatTextRCData(String uImage, String uId, String uNickname, String content, String date) {
+        this.uImage = uImage;
+        this.uId = uId;
+        this.uNickname = uNickname;
+        this.content = content;
+        this.date = date;
+    }
+
     // 게터 세터
     public String getuImage() {
         return uImage;
