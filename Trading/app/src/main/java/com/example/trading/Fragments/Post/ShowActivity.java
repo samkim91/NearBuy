@@ -352,8 +352,11 @@ public class ShowActivity extends AppCompatActivity {
                             // 결과가 failed가 아니라면 룸넘버가 반환됐을 것이다. 이를 chatRoomActivity로 넘겨주자.
                             Intent intent = new Intent(getApplicationContext(), ChatRoomActivity.class);
 
+                            JSONObject jsonObject = new JSONObject(result);
+                            String roomId = jsonObject.getString("roomId");
+
                             // 룸 아이디를 인텐트에 포함시켜서 보냄.
-                            intent.putExtra("roomId", result);
+                            intent.putExtra("roomId", roomId);
                             startActivity(intent);
                         }else{
                             Toast.makeText(getApplicationContext(), "다시 시도해주세요!", Toast.LENGTH_SHORT).show();
@@ -365,6 +368,8 @@ public class ShowActivity extends AppCompatActivity {
                     }
 
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }

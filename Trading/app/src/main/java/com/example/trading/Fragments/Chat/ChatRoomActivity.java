@@ -75,9 +75,23 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     }
 
+    public void setSend_btn(){
+        send_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 버튼이 클릭되면
+                // 서버에 채팅내용을 저장하는 메소드를 호출한다.
+                uploadChat();
+
+                // 에딭텍스트를 지워준다.
+                et_chat_text.getText().clear();
+            }
+        });
+    }
+
     public void uploadChat(){
         // 채팅 보내기 버튼을 누를 때 서버에 채팅내용을 저장하기 위한 메소드
-
+        Log.d(TAG, "uploadChat : "+roomId);
         Call<ResponseBody> call = retrofitService.uploadChat(roomId, UserInfo.getPhoneNum(), et_chat_text.getText().toString());
 
         call.enqueue(new Callback<ResponseBody>() {
@@ -113,6 +127,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
     public void loadLastText(){
+        Log.d(TAG, "start loadLastText : "+roomId);
         Call<ResponseBody> call = retrofitService.loadLastText(roomId);
 
         call.enqueue(new Callback<ResponseBody>() {
@@ -188,20 +203,6 @@ public class ChatRoomActivity extends AppCompatActivity {
                     send_btn.setAlpha(1.0f);
                     send_btn.setClickable(true);
                 }
-            }
-        });
-    }
-
-    public void setSend_btn(){
-        send_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 버튼이 클릭되면
-                // 서버에 채팅내용을 저장하는 메소드를 호출한다.
-                uploadChat();
-
-                // 에딭텍스트를 지워준다.
-                et_chat_text.getText().clear();
             }
         });
     }
