@@ -4,8 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,6 +21,8 @@ import com.example.trading.Fragments.Profile.Fragment_profile;
 import com.example.trading.Fragments.Post.WriteActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    String TAG = "MainAcitivy";
 
     // FragmentManager 는 액티비티 내에 선언된 프래그먼트들을 관리하는 역할임. 이것이 하는 일은
     // 1. 액티비티 내에 존재하는 프래그먼트를 findFragmentById()나 findFragmentByTag()로 가져옴. 둘의 차이는 전자는 화면에 UI를 뿌리는 프래그먼트이고, 후자는 UI를 뿌리지 않음
@@ -42,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // 버튼들 선언
     Button home_btn, category_btn, write_btn, chat_btn, profile_btn;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +79,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 기본화면은 0번인 홈화면
         setFrag(0);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // 서비스 시작
+        Intent intent = new Intent(this, LocalService.class);
+        startService(intent);
+        
     }
 
 

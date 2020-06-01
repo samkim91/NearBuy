@@ -22,6 +22,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <service android:name=".LocalService"
+            android:stopWithTask="false"/>
+
         <activity android:name=".Fragments.Chat.ChatRoomActivity"></activity>
         <activity android:name=".Fragments.Post.CommentActivity" />
         <activity android:name=".Fragments.Profile.MarkedListActivity" />

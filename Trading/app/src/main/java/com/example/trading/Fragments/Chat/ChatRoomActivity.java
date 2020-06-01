@@ -4,8 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.trading.LocalService;
 import com.example.trading.R;
 import com.example.trading.RetrofitService;
 import com.example.trading.UserInfo;
@@ -48,6 +53,8 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +79,14 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         setSend_btn(); // 보내기 버튼과 관련된 기능들
         textWatcher(); // 텍스트 와쳐를 통해 보내기 버튼을 활성/비활성하고 이를 색으로 구분되게 함.
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 지난 대화 불러오기.
+        loadLastText();
 
     }
 
@@ -119,12 +134,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // 지난 대화 불러오기.
-        loadLastText();
-    }
+
 
     public void loadLastText(){
         Log.d(TAG, "start loadLastText : "+roomId);
@@ -206,4 +216,32 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    //        Intent intent = new Intent(this, LocalService.class);
+
+    // 서비스 바인딩 하기!
+
+    // 세 번째 매개변수는 바인딩 옵션을 나타내는 플래그. 일반적으로는 BIND_AUTO_CREATE가 되는데,
+    // 이는 서비스가 아직 활성화되지 않았을 경우 서비스를 생성하기 위함.
+    // 그 외에는 BIND_DEBUG_UNBIND와 BIND_NOT_FOREGROUND를 사용할 수 있고 값이 없으면 0으로 설정.
+//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
+    // 바인드서비스를 위한 커넥션을 제공함. 만약 바인딩에 성공하면 1번 메소드가, 실패하면 2번 메소드가 자동 호출됨.
+//    ServiceConnection connection = new ServiceConnection() {
+//        @Override
+//        public void onServiceConnected(ComponentName name, IBinder service) {
+//            Log.i(TAG, "onServiceConnected");
+//            // 연결에 성공하면, 받아온 바인더를 클라이언트 서비스와 연결해준다.
+//            LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
+//            mService = binder.getService();
+//            mBound = true;
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName name) {
+//            Log.i(TAG, "onServiceDisconnected");
+//            mBound = false;
+//        }
+//    };
 }
