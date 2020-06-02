@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // 서비스 시작
         Intent intent = new Intent(this, LocalService.class);
         startService(intent);
-        
+
     }
 
 

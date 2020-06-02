@@ -32,6 +32,20 @@ public class LocalService extends IntentService {
 
     Socket socket;
 
+    //     클라이언트에게 주어질 바인더
+    IBinder binder = new LocalBinder();
+
+    boolean mBound = false;
+
+    //클라이언트 바인더를 위해서 쓰이는 클래스.
+    public class LocalBinder extends Binder {
+        public LocalService getService(){
+            Log.i(TAG, "LocalBinder class");
+            // Return this instance of LocalService so clients can call public methods
+            return LocalService.this;
+        }
+    }
+
 
     // IntentService를 상속하면 구현해야하는 메소드.
     @Override
@@ -118,7 +132,6 @@ public class LocalService extends IntentService {
 
     }
 
-
     // 태스크가 종료되었을 때 콜밸되는 메소드.. 여기서 서비스의 종료를 선언해줄 수 있다.
     @Override
     public void onTaskRemoved(Intent rootIntent) {
@@ -127,36 +140,19 @@ public class LocalService extends IntentService {
         super.onTaskRemoved(rootIntent);
     }
 
+    // 바인드 되었을 때 호출되는 함수
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.i(TAG, "onBind");
+        mBound = true;
+        return binder;
+    }
 
-    // 클라이언트에게 주어질 바인더
-//    IBinder binder = new LocalBinder();
-//
-//    boolean mBound = false;
-
-
-//
-//    //클라이언트 바인더를 위해서 쓰이는 클래스.
-//    public class LocalBinder extends Binder {
-//        public LocalService getService(){
-//            Log.i(TAG, "LocalBinder class");
-//            // Return this instance of LocalService so clients can call public methods
-//            return LocalService.this;
-//        }
-//    }
-
-//    // 바인드 되었을 때 호출되는 함수
-//    @Nullable
-//    @Override
-//    public IBinder onBind(Intent intent) {
-//        Log.i(TAG, "onBind");
-//        mBound = true;
-//        return binder;
-//    }
-
-//    // 언바인드 되었을 때 호출되는 함수
-//    @Override
-//    public boolean onUnbind(Intent intent) {
-//        mBound = false;
-//        return super.onUnbind(intent);
-//    }
+    // 언바인드 되었을 때 호출되는 함수
+    @Override
+    public boolean onUnbind(Intent intent) {
+        mBound = false;
+        return super.onUnbind(intent);
+    }
 }

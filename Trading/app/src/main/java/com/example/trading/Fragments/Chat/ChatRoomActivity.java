@@ -53,6 +53,26 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     RetrofitService retrofitService = retrofit.create(RetrofitService.class);
 
+    LocalService mService;
+    boolean mBound = false;
+
+    // 바인드서비스를 위한 커넥션을 제공함. 만약 바인딩에 성공하면 1번 메소드가, 실패하면 2번 메소드가 자동 호출됨.
+    ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(TAG, "onServiceConnected");
+            // 연결에 성공하면, 받아온 바인더를 클라이언트 서비스와 연결해준다.
+            LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i(TAG, "onServiceDisconnected");
+            mBound = false;
+        }
+    };
 
 
     @Override
@@ -88,6 +108,22 @@ public class ChatRoomActivity extends AppCompatActivity {
         // 지난 대화 불러오기.
         loadLastText();
 
+        Intent intent = new Intent(this, LocalService.class);
+
+        // 서비스 바인딩 하기!
+
+        // 세 번째 매개변수는 바인딩 옵션을 나타내는 플래그. 일반적으로는 BIND_AUTO_CREATE가 되는데,
+        // 이는 서비스가 아직 활성화되지 않았을 경우 서비스를 생성하기 위함.
+        // 그 외에는 BIND_DEBUG_UNBIND와 BIND_NOT_FOREGROUND를 사용할 수 있고 값이 없으면 0으로 설정.
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(connection);
+        mBound = false;
     }
 
     public void setSend_btn(){
@@ -95,6 +131,10 @@ public class ChatRoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 버튼이 클릭되면
+
+                // 서비스로 해당 텍스트를 보내준다. 서비스에서는 TCP 소켓을 통해 채팅 서버로 데이터를 보낼 것이다.
+
+
                 // 서버에 채팅내용을 저장하는 메소드를 호출한다.
                 uploadChat();
 
@@ -102,6 +142,12 @@ public class ChatRoomActivity extends AppCompatActivity {
                 et_chat_text.getText().clear();
             }
         });
+    }
+
+    public void sendService(){
+        // 서비스의 send 메소드를 실행시키기 위한 메소드이다. 입력란에 있는 내용을 가져와서 가공을 한 다음 서비스의 send 메소드 파라미터로 보내면
+        // 채팅 서버에 가서 필요한 채팅방으로 배정될 것이다.
+        // 양식은 방Id, 보낸사람Id, 텍스트 내용, 시간 등이다.
     }
 
     public void uploadChat(){
@@ -218,30 +264,4 @@ public class ChatRoomActivity extends AppCompatActivity {
     }
 
 
-    //        Intent intent = new Intent(this, LocalService.class);
-
-    // 서비스 바인딩 하기!
-
-    // 세 번째 매개변수는 바인딩 옵션을 나타내는 플래그. 일반적으로는 BIND_AUTO_CREATE가 되는데,
-    // 이는 서비스가 아직 활성화되지 않았을 경우 서비스를 생성하기 위함.
-    // 그 외에는 BIND_DEBUG_UNBIND와 BIND_NOT_FOREGROUND를 사용할 수 있고 값이 없으면 0으로 설정.
-//        bindService(intent, connection, Context.BIND_AUTO_CREATE);
-
-    // 바인드서비스를 위한 커넥션을 제공함. 만약 바인딩에 성공하면 1번 메소드가, 실패하면 2번 메소드가 자동 호출됨.
-//    ServiceConnection connection = new ServiceConnection() {
-//        @Override
-//        public void onServiceConnected(ComponentName name, IBinder service) {
-//            Log.i(TAG, "onServiceConnected");
-//            // 연결에 성공하면, 받아온 바인더를 클라이언트 서비스와 연결해준다.
-//            LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
-//            mService = binder.getService();
-//            mBound = true;
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName name) {
-//            Log.i(TAG, "onServiceDisconnected");
-//            mBound = false;
-//        }
-//    };
 }
