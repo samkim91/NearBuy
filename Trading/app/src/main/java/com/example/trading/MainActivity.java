@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -81,14 +82,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setFrag(0);
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
 
         // 서비스 시작
-        Intent intent = new Intent(this, LocalService.class);
-        startService(intent);
+//        Intent intent = new Intent(this, LocalService.class);
+//        startService(intent);
 
     }
 

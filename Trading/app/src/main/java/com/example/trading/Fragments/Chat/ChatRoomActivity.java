@@ -1,12 +1,15 @@
 package com.example.trading.Fragments.Chat;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -28,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -102,6 +107,42 @@ public class ChatRoomActivity extends AppCompatActivity {
 
     }
 
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // 브로드캐스트 리시브 받았을 때
+            String message = intent.getStringExtra("message");
+            Log.d(TAG, "onReceive : "+message);
+
+            // 메시지를 해부해서 roomId가 같은지 확인하고 맞으면 뿌리고 아니면 패스
+
+            try {
+                JSONObject jsonObject = new JSONObject(message);
+
+                // 채팅 서버로 부터 받은 룸 아이디
+                String roomId1 = jsonObject.getString("roomId");
+
+                // 현재 방과 서버에서 온 룸 아이디가 같은지 확인
+                if(roomId1.equals(roomId)){
+                    // 같으면 채팅 내용 추가, 아니면 생략
+                    String uImage = jsonObject.getString("image");
+                    String uId = jsonObject.getString("userId");
+                    String uNickname = jsonObject.getString("nickname");
+                    String content = jsonObject.getString("content");
+                    String date = jsonObject.getString("date");
+
+                    ChatTextRCData chatTextRCData = new ChatTextRCData(uImage, uId, uNickname, content, date);
+
+                    adapter.addItem(chatTextRCData);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -117,6 +158,8 @@ public class ChatRoomActivity extends AppCompatActivity {
         // 그 외에는 BIND_DEBUG_UNBIND와 BIND_NOT_FOREGROUND를 사용할 수 있고 값이 없으면 0으로 설정.
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
 
+        // 브로드캐스트 리시버 등록
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter("Chat Text"));
     }
 
     @Override
@@ -124,6 +167,9 @@ public class ChatRoomActivity extends AppCompatActivity {
         super.onStop();
         unbindService(connection);
         mBound = false;
+
+        // 브로드캐스트 리시버 등록 해제
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
 
     public void setSend_btn(){
@@ -147,13 +193,20 @@ public class ChatRoomActivity extends AppCompatActivity {
     public void sendService(){
         // 서비스의 send 메소드를 실행시키기 위한 메소드이다. 입력란에 있는 내용을 가져와서 가공을 한 다음 서비스의 send 메소드 파라미터로 보내면
         // 채팅 서버에 가서 필요한 채팅방으로 배정될 것이다.
-        // 양식은 방Id, 보낸사람Id, 텍스트 내용 등이다. (시간은 채팅서버에서 만들어서 보내줄 것.)
+        // 양식은 방Id, 보낸사람Id, 텍스트 내용 등이다.
 
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("roomId", roomId);
             jsonObject.put("userId", UserInfo.getPhoneNum());
             jsonObject.put("content", et_chat_text.getText().toString());
+
+            // 현재시간 불러와서 가공
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
+            Date date = new Date();
+            String time = format.format(date);
+
+            jsonObject.put("date", time);
 
             mService.send(jsonObject.toString());
 

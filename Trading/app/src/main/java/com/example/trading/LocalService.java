@@ -3,6 +3,9 @@ package com.example.trading;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.IntentService;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Binder;
@@ -12,8 +15,16 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.example.trading.Fragments.Chat.ChatRoomActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,9 +44,12 @@ public class LocalService extends IntentService {
 
     String TAG = "LocalService";
 
+    String CHANNEL_ID = "NearBuy";
+
+
     // IntentService를 상속하면서 선언해줘야하는 생성자.. 이로써 클라이언트에서 어떤 인텐트에 대한 요청인지 알 수 있다고 한다.
-    public LocalService(String name) {
-        super(name);
+    public LocalService() {
+        super("LocalService");
     }
 
     Socket socket;
@@ -54,13 +68,10 @@ public class LocalService extends IntentService {
         }
     }
 
-    // 현재 최상위 액티비티 뭔지 확인하기 위한 매니져
-    ActivityManager activityManager = (ActivityManager) getSystemService(Activity.ACTIVITY_SERVICE);
-
-
     @Override
     public void onCreate() {
         super.onCreate();
+
 
     }
 
@@ -69,10 +80,18 @@ public class LocalService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.i(TAG, "onHandleIntent");
 
+        requestConnection();
+
+    }
+
+    public void requestConnection(){
+
+        Log.i(TAG, "requestConnection");
         // 서비스 단에서 실행할 코드들을 여기에 적으면 된다.
         // 먼저 TCP 소켓을 열어줄 것이다.
 
         Thread thread = new Thread(){
+            @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override
             public void run() {
 
@@ -80,7 +99,9 @@ public class LocalService extends IntentService {
                     socket = new Socket();
                     socket.connect(new InetSocketAddress("15.165.57.108", 5000));
 
-                    Log.i(TAG, "연결완료 : "+socket.getRemoteSocketAddress());
+                    Log.i(TAG, "연결완료");
+                    Log.i(TAG, "원격소켓 : "+socket.getRemoteSocketAddress());
+                    Log.i(TAG, "로컬소켓 : "+socket.getLocalSocketAddress());
 
                     // 소켓이 연결되면 바로 리시브 메소드를 실행시켜, 채팅서버에서 스트림으로 보내주는 데이터를 받는다.
                     receive();
@@ -96,7 +117,17 @@ public class LocalService extends IntentService {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public void receive(){
 
+        Log.i(TAG, "receive start");
+
+        Log.i(TAG, "원격소켓 : "+socket.getRemoteSocketAddress());
+        Log.i(TAG, "로컬소켓 : "+socket.getLocalSocketAddress());
+
+        // 현재 최상위 액티비티 뭔지 확인하기 위한 매니져
+        ActivityManager activityManager = (ActivityManager) getSystemService(Activity.ACTIVITY_SERVICE);
+
         while (true){
+
+            Log.i(TAG, "리시브 반복문 진입");
 
             try{
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -115,10 +146,52 @@ public class LocalService extends IntentService {
 
                 if(componentName.getClassName().contains(".Fragments.Chat")){
                     // 1번의 경우.. 로컬 브로드캐스트로 데이터 보내기
+                    Log.d(TAG, "Local Broadcast");
+
+                    Intent intent = new Intent("Chat Text");
+                    intent.putExtra("message", data);
+
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
                 }else{
                     // 2번의 경우.. 알림 띄우기
 
+                    try{
+                        JSONObject jsonObject = new JSONObject(data);
+
+                        // 채팅 서버로 부터 받은 룸 아이디
+                        String roomId1 = jsonObject.getString("roomId");
+
+                        // 같으면 채팅 내용 추가, 아니면 생략
+                        String uImage = jsonObject.getString("image");
+                        String uId = jsonObject.getString("userId");
+                        String uNickname = jsonObject.getString("nickname");
+                        String content = jsonObject.getString("content");
+                        String date = jsonObject.getString("date");
+
+                        // 알림탭을 눌렀을 때 해당 채팅방 액티비티로 이동하게끔 한다.
+                        Intent intent = new Intent(this, ChatRoomActivity.class);
+                        intent.putExtra("roomId", roomId1);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                                .setContentTitle(uNickname+" 님으로부터 새로운 메시지가 도착했습니다.")
+                                .setContentText(content)
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true);
+
+                        // 노티피케이션 채널을 만드는 메소드
+                        createNotificationChannel();
+
+                        // 노티 보내기.
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+                        notificationManagerCompat.notify(10001, builder.build());
+
+                    }catch (JSONException e){
+
+                    }
                 }
 
 
@@ -134,6 +207,10 @@ public class LocalService extends IntentService {
     }
 
     public void send(final String data){
+        Log.i(TAG, "send");
+        Log.i(TAG, "원격소켓 : "+socket.getRemoteSocketAddress());
+        Log.i(TAG, "로컬소켓 : "+socket.getLocalSocketAddress());
+
         // 데이터를 보내는 메소드.. 값을 받아와서 쓰레드로 처리해줄 것이다.
 
         Thread thread = new Thread(){
@@ -144,7 +221,8 @@ public class LocalService extends IntentService {
 
                     bufferedWriter.write(data);
                     bufferedWriter.flush();
-                    Log.d(TAG, "sended : "+data);
+                    bufferedWriter.close();
+                    Log.i(TAG, "sended : "+data);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -184,6 +262,11 @@ public class LocalService extends IntentService {
     @Override
     public IBinder onBind(Intent intent) {
         Log.i(TAG, "onBind");
+
+
+        requestConnection();
+
+
         mBound = true;
         return binder;
     }
@@ -194,5 +277,23 @@ public class LocalService extends IntentService {
         Log.i(TAG, "onUnbind");
         mBound = false;
         return super.onUnbind(intent);
+    }
+
+    private void createNotificationChannel(){
+        Log.d(TAG, "createNotificationChannel");
+
+        // API 26+ 에서는 알림 채널을 설정하는게 추가되어서 해주는 작업
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            CharSequence name = "알림 이름";
+            String description = "채팅이 오면 발생하는 알림.";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
     }
 }
