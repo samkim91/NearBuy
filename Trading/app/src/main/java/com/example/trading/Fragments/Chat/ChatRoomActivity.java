@@ -133,7 +133,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                 // 버튼이 클릭되면
 
                 // 서비스로 해당 텍스트를 보내준다. 서비스에서는 TCP 소켓을 통해 채팅 서버로 데이터를 보낼 것이다.
-
+                sendService();
 
                 // 서버에 채팅내용을 저장하는 메소드를 호출한다.
                 uploadChat();
@@ -147,7 +147,19 @@ public class ChatRoomActivity extends AppCompatActivity {
     public void sendService(){
         // 서비스의 send 메소드를 실행시키기 위한 메소드이다. 입력란에 있는 내용을 가져와서 가공을 한 다음 서비스의 send 메소드 파라미터로 보내면
         // 채팅 서버에 가서 필요한 채팅방으로 배정될 것이다.
-        // 양식은 방Id, 보낸사람Id, 텍스트 내용, 시간 등이다.
+        // 양식은 방Id, 보낸사람Id, 텍스트 내용 등이다. (시간은 채팅서버에서 만들어서 보내줄 것.)
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("roomId", roomId);
+            jsonObject.put("userId", UserInfo.getPhoneNum());
+            jsonObject.put("content", et_chat_text.getText().toString());
+
+            mService.send(jsonObject.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void uploadChat(){
@@ -179,8 +191,6 @@ public class ChatRoomActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     public void loadLastText(){
         Log.d(TAG, "start loadLastText : "+roomId);

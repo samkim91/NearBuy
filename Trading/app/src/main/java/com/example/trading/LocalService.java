@@ -1,12 +1,19 @@
 package com.example.trading;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.IntentService;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.List;
 
 public class LocalService extends IntentService {
 
@@ -46,10 +54,21 @@ public class LocalService extends IntentService {
         }
     }
 
+    // 현재 최상위 액티비티 뭔지 확인하기 위한 매니져
+    ActivityManager activityManager = (ActivityManager) getSystemService(Activity.ACTIVITY_SERVICE);
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+    }
 
     // IntentService를 상속하면 구현해야하는 메소드.
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.i(TAG, "onHandleIntent");
+
         // 서비스 단에서 실행할 코드들을 여기에 적으면 된다.
         // 먼저 TCP 소켓을 열어줄 것이다.
 
@@ -63,6 +82,7 @@ public class LocalService extends IntentService {
 
                     Log.i(TAG, "연결완료 : "+socket.getRemoteSocketAddress());
 
+                    // 소켓이 연결되면 바로 리시브 메소드를 실행시켜, 채팅서버에서 스트림으로 보내주는 데이터를 받는다.
                     receive();
 
                 } catch (IOException e) {
@@ -73,6 +93,7 @@ public class LocalService extends IntentService {
         thread.start();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     public void receive(){
 
         while (true){
@@ -82,9 +103,25 @@ public class LocalService extends IntentService {
                 String data = bufferedReader.readLine();
                 Log.d(TAG, "received data : "+data);
 
-                // 받은 데이터로 알림도 보낼 것이다. 알림의 구분은 현재 최상위 액티비티를 확인해서 chatRoom 이거나, chatList 프래그먼트일 때는 안보내도록 한다.
+                // 데이터를 받으면.. 두가지 상황에 따라 처리하는 방법이 다르다.
+                // 1. 화면이 채팅목록이나 채팅방에 있을 때 : 로컬 브로드캐스트를 사용해서 해당 액티비티에 데이터를 보내준다.
+                // 2. 위의 경우가 아닐 때 : 알림을 만들어서 보내준다.
 
-                // 로컬 브로드캐스트를 사용해서 해당 chatRoom 이거나 chatList 프래그먼트일 때 데이터를 보내줄 것이다.
+                // 최상위 액티비티를 확인! deprecated 됐지만 하위 호환을 위해서다. 사용하는데 문제는 없음.
+                List<ActivityManager.RunningTaskInfo> infoList = activityManager.getRunningTasks(1);
+                ActivityManager.RunningTaskInfo info = infoList.get(0);
+
+                ComponentName componentName = info.topActivity;
+
+                if(componentName.getClassName().contains(".Fragments.Chat")){
+                    // 1번의 경우.. 로컬 브로드캐스트로 데이터 보내기
+
+                }else{
+                    // 2번의 경우.. 알림 띄우기
+
+                }
+
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -120,6 +157,7 @@ public class LocalService extends IntentService {
     }
 
     public void stopClient(){
+        Log.i(TAG, "stopClient");
         // 소켓 연결을 끊는 메소드
 
         try {
@@ -135,6 +173,7 @@ public class LocalService extends IntentService {
     // 태스크가 종료되었을 때 콜밸되는 메소드.. 여기서 서비스의 종료를 선언해줄 수 있다.
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        Log.i(TAG, "onTaskRemoved");
         stopClient(); // 소켓 끊는 메소드
         stopSelf(); // 서비스 종료하는 메소드
         super.onTaskRemoved(rootIntent);
@@ -152,6 +191,7 @@ public class LocalService extends IntentService {
     // 언바인드 되었을 때 호출되는 함수
     @Override
     public boolean onUnbind(Intent intent) {
+        Log.i(TAG, "onUnbind");
         mBound = false;
         return super.onUnbind(intent);
     }
