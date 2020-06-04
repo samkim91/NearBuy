@@ -16,23 +16,21 @@
 
     try{
       // sql문을 준비한다.
-      $stmt = $conn -> prepare("SELECT password FROM userlist WHERE phonenum = :phonenum");
+      $stmt = $conn -> prepare("SELECT phonenum, nickname, email, image FROM userlist WHERE phonenum = :phonenum AND password = :password");
 
       // 휴대폰 번호를 넣는다.
       $stmt -> bindParam(':phonenum', $phoneNum);
+      $stmt -> bindParam(':password', $password);
       // 준비된 sql문을 보낸다.(쿼리)
       $stmt -> execute();
 
       // 결과를 fetch로 연동한다.
-      $row = $stmt -> fetch();
+      $row = $stmt -> fetch(PDO::FETCH_ASSOC);
 
       if($row!=null){
-        // echo "아이디 있음";
-        if($row['password'] == $password){
-          echo "ok";
-        }else{
-          echo "wrong";
-        }
+        // echo "아이디 있음"
+        echo json_encode($row);
+
       }else{
         echo "null";
       }

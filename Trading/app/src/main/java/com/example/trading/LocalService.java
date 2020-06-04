@@ -28,6 +28,8 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -58,6 +60,9 @@ public class LocalService extends IntentService {
     IBinder binder = new LocalBinder();
 
     boolean mBound = false;
+
+    DataInputStream dataInputStream;
+    DataOutputStream dataOutputStream;
 
     //클라이언트 바인더를 위해서 쓰이는 클래스.
     public class LocalBinder extends Binder {
@@ -97,7 +102,7 @@ public class LocalService extends IntentService {
 
                 try {
                     socket = new Socket();
-                    socket.connect(new InetSocketAddress("15.165.57.108", 5000));
+                    socket.connect(new InetSocketAddress("10.0.2.2", 5000));
 
                     Log.i(TAG, "연결완료");
                     Log.i(TAG, "원격소켓 : "+socket.getRemoteSocketAddress());
@@ -109,6 +114,28 @@ public class LocalService extends IntentService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        };
+        thread.start();
+    }
+
+    public void sendInitInfo(final String initInfo){
+        Log.i(TAG, "send Init Info");
+
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+
+                try{
+                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                    dataOutputStream.writeUTF(initInfo);
+
+                    Log.i(TAG, "init Info sended : "+initInfo);
+
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+
             }
         };
         thread.start();
@@ -130,8 +157,10 @@ public class LocalService extends IntentService {
             Log.i(TAG, "리시브 반복문 진입");
 
             try{
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String data = bufferedReader.readLine();
+                dataInputStream = new DataInputStream(socket.getInputStream());
+                String data = dataInputStream.readUTF();
+//                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                String data = bufferedReader.readLine();
                 Log.d(TAG, "received data : "+data);
 
                 // 데이터를 받으면.. 두가지 상황에 따라 처리하는 방법이 다르다.
@@ -198,7 +227,7 @@ public class LocalService extends IntentService {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.d(TAG, "can't connect with SERVER");
+                Log.i(TAG, "can't connect with SERVER");
                 stopClient();
                 break;
             }
@@ -217,11 +246,13 @@ public class LocalService extends IntentService {
             @Override
             public void run() {
                 try {
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-                    bufferedWriter.write(data);
-                    bufferedWriter.flush();
-                    bufferedWriter.close();
+                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                    dataOutputStream.writeUTF(data);
+
+//                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+//                    bufferedWriter.write(data);
+//                    bufferedWriter.flush();
                     Log.i(TAG, "sended : "+data);
 
                 } catch (IOException e) {

@@ -70,6 +70,17 @@ public class ChatRoomActivity extends AppCompatActivity {
             LocalService.LocalBinder binder = (LocalService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+
+            try {
+                // 초기 유저에 대한 데이터를 보내자.
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("roomId", roomId);
+                jsonObject.put("userId", UserInfo.getPhoneNum());
+
+                mService.sendInitInfo(jsonObject.toString());
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -125,6 +136,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
                 // 현재 방과 서버에서 온 룸 아이디가 같은지 확인
                 if(roomId1.equals(roomId)){
+                    Log.i(TAG, "same room");
                     // 같으면 채팅 내용 추가, 아니면 생략
                     String uImage = jsonObject.getString("image");
                     String uId = jsonObject.getString("userId");
@@ -135,6 +147,8 @@ public class ChatRoomActivity extends AppCompatActivity {
                     ChatTextRCData chatTextRCData = new ChatTextRCData(uImage, uId, uNickname, content, date);
 
                     adapter.addItem(chatTextRCData);
+
+                    adapter.notifyDataSetChanged();
                 }
 
             } catch (JSONException e) {
@@ -182,7 +196,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                 sendService();
 
                 // 서버에 채팅내용을 저장하는 메소드를 호출한다.
-                uploadChat();
+//                uploadChat();
 
                 // 에딭텍스트를 지워준다.
                 et_chat_text.getText().clear();
@@ -199,6 +213,8 @@ public class ChatRoomActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("roomId", roomId);
             jsonObject.put("userId", UserInfo.getPhoneNum());
+            jsonObject.put("nickname", UserInfo.getNickname());
+            jsonObject.put("image", UserInfo.getImage());
             jsonObject.put("content", et_chat_text.getText().toString());
 
             // 현재시간 불러와서 가공

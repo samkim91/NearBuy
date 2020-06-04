@@ -18,6 +18,9 @@ import com.example.trading.R;
 import com.example.trading.RequestHttpURLConnection;
 import com.example.trading.UserInfo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginActivity extends AppCompatActivity {
 
     String TAG = "LoginActivity";
@@ -84,15 +87,31 @@ public class LoginActivity extends AppCompatActivity {
             // 작업이 끝나면 다이얼로그를 지워준다.
             //dialog.dismiss();
 
-            if(s.equals("ok")){
+            if(!s.equals("wrong")||!s.equals("null")){
+
+                Log.i(TAG, "user info : "+s);
                 // 로그인 성공! 메인 화면으로 간다.
 //                Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
 
                 // 로그인한 유저를 유지시키기 위해 휴대폰 번호를 메모리에 올려놓음. 쉐어드프리퍼런스를 사용하는 방법도 있으나, 필요할 때마다 쉐어드프리퍼런스를 열어야하는 문제가 조금 있음.
                 // 보안적인 이슈는 없는지 확인해볼 필요 있음.
                 UserInfo.phoneNum = phoneNum;
-                // 자동로그인에 휴대폰 번호를 넘겨서 저장.
-                saveLogin(phoneNum);
+
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+
+                    UserInfo.setImage(jsonObject.getString("image"));
+                    UserInfo.setNickname(jsonObject.getString("nickname"));
+
+                    // 자동로그인에 휴대폰 번호를 넘겨서 저장.
+                    saveLogin(phoneNum, jsonObject.getString("image"), jsonObject.getString("nickname"));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 // 액티비티 스택에서 지난 액티비티를 모두 삭제하고, 새로운 스택으로 시작하겠다는 플래그를 넣엉줌.
@@ -170,12 +189,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // 자동 로그인을 위해 로그인 시 정보를 저장하는 기능
-    public void saveLogin(String phoneNum){
+    public void saveLogin(String phoneNum, String image, String nickname){
         SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putBoolean("auto", true);
         editor.putString("phoneNum", phoneNum);
+        editor.putString("image", image);
+        editor.putString("nickname", nickname);
+
         editor.commit();
     }
 

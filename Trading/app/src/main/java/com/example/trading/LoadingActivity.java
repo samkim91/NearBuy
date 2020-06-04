@@ -54,7 +54,11 @@ public class LoadingActivity extends AppCompatActivity {
         // 로그인 정보가 남아있다면 바로 메인페이지로 넘어가고, 아니라면 로그인 페이지로 이동.
         if(loginBefore == true){
             String phoneNumFromShared = sharedPreferences.getString("phoneNum", "");
+            String imageFromShared = sharedPreferences.getString("image", "");
+            String nicknameFromShared = sharedPreferences.getString("nickname", "");
             UserInfo.phoneNum = phoneNumFromShared;
+            UserInfo.setNickname(nicknameFromShared);
+            UserInfo.setImage(imageFromShared);
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             // 액티비티 스택에서 지난 액티비티를 모두 삭제하고, 새로운 스택으로 시작하겠다는 플래그를 넣엉줌.

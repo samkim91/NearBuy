@@ -8,6 +8,26 @@ public class UserInfo {
 
     public static Socket socket;
 
+    public static String nickname;
+
+    public static String image;
+
+    public static String getNickname() {
+        return nickname;
+    }
+
+    public static void setNickname(String nickname) {
+        UserInfo.nickname = nickname;
+    }
+
+    public static String getImage() {
+        return image;
+    }
+
+    public static void setImage(String image) {
+        UserInfo.image = image;
+    }
+
     public static String getPhoneNum() {
         return phoneNum;
     }
