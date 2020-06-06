@@ -196,7 +196,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                 sendService();
 
                 // 서버에 채팅내용을 저장하는 메소드를 호출한다.
-//                uploadChat();
+                uploadChat();
 
                 // 에딭텍스트를 지워준다.
                 et_chat_text.getText().clear();

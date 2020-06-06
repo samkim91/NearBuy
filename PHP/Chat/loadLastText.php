@@ -8,10 +8,10 @@
   $roomId = $_GET['roomId'];
 
   $stmt = $conn -> prepare('SELECT *, u.image image, u.nickname nickname
-    FROM chatText c, userlist u WHERE c.roomId = :roomId AND c.userId = u.phonenum');
+    FROM chatText c, userlist u WHERE c.roomId = :roomId AND c.userId = u.phonenum ORDER BY num');
 
   $stmt -> bindParam(':roomId', $roomId);
-  
+
   if($stmt -> execute()){
 
     $result = $stmt -> fetchAll(PDO::FETCH_ASSOC);

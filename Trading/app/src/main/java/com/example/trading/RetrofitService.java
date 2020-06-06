@@ -150,4 +150,9 @@ public interface RetrofitService {
             @Field("roomId") String roomId, @Field("userId") String userId, @Field("content") String content
     );
 
+    @GET("Chat/loadChatList.php")
+    Call<ResponseBody> loadChatList(
+            @Query("userId") String userId
+    );
+
 }
