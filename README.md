@@ -6,28 +6,28 @@
 This project is a Android App copying 당근마켓. The idea that makes direct selling between indivisuals to prevent scam was very impressive, so I made this.
 
 [주요기능] (Main functions)
-물품 게시/조회/수정/삭제 (Create/Read/Update/Delete post.)
-복수 사진 추가 (Adding multi images)
-위치 기반 물품 조회 (Showing posts based my location)
-Haversine Formula, EndlessScroll
-내 위치 설정 (Set my location)
-최대 2개의 내 위치 및 거리를 설정 (Setting 2 locations and distance)
-Material Chip, Kakao address API, Google Map API
-실시간 채팅 (Realtime chatting)
-TCP 통신을 이용한 실시간 1:1 채팅 (Realtime chatting between individuals using TCP)
-TCP, MultiThread, Android Service, Android Broadcast, Notification
+- 물품 게시/조회/수정/삭제 (Create/Read/Update/Delete post.)
+  * 복수 사진 추가 (Adding multi images)
+  * 위치 기반 물품 조회 (Showing posts based my location)
+  * Haversine Formula, EndlessScroll
+- 내 위치 설정 (Set my location)
+  * 최대 2개의 내 위치 및 거리를 설정 (Setting 2 locations and distance)
+  * Material Chip, Kakao address API, Google Map API
+- 실시간 채팅 (Realtime chatting)
+  * TCP 통신을 이용한 실시간 1:1 채팅 (Realtime chatting between individuals using TCP)
+  * TCP, MultiThread, Android Service, Android Broadcast, Notification
 [부가기능] (others)
-회원가입/로그인, 비밀번호 찾기 (Sign up, Sign in, Find password)
-SMS 본인 인증 (SMS Athentication)
-이메일 이용 비밀번호 찾기 (Finding password using E-mail)
-Firebase SMS auth, PHPmailer
-프로필 수정 (Update my profile)
-게시물 관련 (Regarding post)
-댓글/대댓글 (Comment and re-comment)
-찜하기 (Adding to cart)
-판매 상태 변경 (Changing selling status)
+- 회원가입/로그인, 비밀번호 찾기 (Sign up, Sign in, Find password)
+  * SMS 본인 인증 (SMS Athentication)
+  * 이메일 이용 비밀번호 찾기 (Finding password using E-mail)
+  * Firebase SMS auth, PHPmailer
+- 프로필 수정 (Update my profile)
+- 게시물 관련 (Regarding post)
+  * 댓글/대댓글 (Comment and re-comment)
+  * 찜하기 (Adding to cart)
+  * 판매 상태 변경 (Changing selling status)
 [공통기술] (Common skills)
-RecyclerView, Glide, Retrofit, GEOCoder, MultiImage, Shared Preferences
+- RecyclerView, Glide, Retrofit, GEOCoder, MultiImage, Shared Preferences
 
  
 
