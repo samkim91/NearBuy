@@ -307,6 +307,8 @@ public class LocalService extends IntentService {
     public boolean onUnbind(Intent intent) {
         Log.i(TAG, "onUnbind");
         mBound = false;
+
+        stopClient();
         return super.onUnbind(intent);
     }
 

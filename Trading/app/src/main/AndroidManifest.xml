@@ -27,7 +27,8 @@
         <service android:name=".LocalService"
             android:stopWithTask="false"/>
 
-        <activity android:name=".Fragments.Chat.ChatRoomActivity"></activity>
+        <activity android:name=".Fragments.Chat.ChatRoomActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".Fragments.Post.CommentActivity" />
         <activity android:name=".Fragments.Profile.MarkedListActivity" />
         <activity android:name=".Fragments.Profile.SellingListActivity" />

@@ -10,7 +10,7 @@
   $stmt = $conn -> prepare('SELECT * FROM(
 SELECT u.image image, u.nickname uNickname, u.phonenum uId, c1.roomId roomId, t.content content, t.date uDate
      	 FROM chatUsers c1, chatUsers c2, chatText t, userlist u
-      	 WHERE (c1.userId = :userId AND c2.userId != :userId) AND c1.roomId = t.roomId AND c2.userId = u.phonenum
+      	 WHERE (c1.userId = :userId AND c2.userId != :userId) AND c1.roomId = t.roomId AND c2.userId = u.phonenum AND c1.roomId = c2.roomId
          ORDER BY uDate DESC) sub GROUP BY sub.roomId DESC');
 
   $stmt -> bindParam(':userId', $userId);

@@ -47,6 +47,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     ImageButton send_btn;
 
     ChatTextRCAdapter adapter;
+    RecyclerView recyclerView;
 
     String URL = "http://15.165.57.108/Chat/";
     String TAG = "ChatRoomActivity";
@@ -99,7 +100,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         et_chat_text = findViewById(R.id.et_chat_text);
         send_btn = findViewById(R.id.send_btn);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView_chatText);
+        recyclerView = findViewById(R.id.recyclerView_chatText);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -149,6 +150,8 @@ public class ChatRoomActivity extends AppCompatActivity {
                     adapter.addItem(chatTextRCData);
 
                     adapter.notifyDataSetChanged();
+                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);  // 마지막 텍스트로 포커스를 이동해주기
+
                 }
 
             } catch (JSONException e) {
@@ -200,6 +203,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
                 // 에딭텍스트를 지워준다.
                 et_chat_text.getText().clear();
+
             }
         });
     }
@@ -293,6 +297,7 @@ public class ChatRoomActivity extends AppCompatActivity {
                         }
 
                         adapter.notifyDataSetChanged();
+                        recyclerView.scrollToPosition(adapter.getItemCount() - 1);  // 마지막 텍스트로 포커스를 이동해주기
 
                     } catch (IOException e) {
                         e.printStackTrace();
